@@ -767,7 +767,6 @@ class Sudoku {
         console.log(rpt);
         this.puzzle.print();
     }
-
     //#endregion
     //#region STATIC METHODS
     //#endregion
