@@ -1,0 +1,79 @@
+﻿body {
+	font-family: Tahoma, Arial, Helvetica, sans-serif
+}
+
+.grid {
+	display: grid;
+	/*height: 100vh;*/
+	grid-template-columns: 1fr 9fr 1fr 9fr;
+	grid-template-rows: 1fr 9fr 1fr;
+	grid-template-areas: "corner1 topbar corner2 control" "leftside board rightside control" "corner3 bottombar corner4 control";
+	grid-gap: 0.01rem;
+	font-weight: 800;
+	text-transform: uppercase;
+	font-size: 12px;
+	color: #004d40;
+	text-align: center;
+}
+
+#control {
+	grid-area: control;
+	border: 1px solid red;
+	width: 20rem;
+}
+
+#corner1 {
+	grid-area: corner1;
+	border: none;
+	width: 3rem;
+	height: 3rem;
+}
+#corner2 {
+	grid-area: corner2;
+	border: none;
+	width: 3rem;
+	height: 3rem;
+}
+#corner3 {
+	grid-area: corner3;
+	border: none;
+	width: 3rem;
+	height: 3rem;
+}
+#corner4 {
+	grid-area: corner4;
+	border: none;
+	width: 3rem;
+	height: 3rem;
+}
+
+#board {
+	grid-area: grid;
+	border: 1px solid black;
+	height: 27rem;
+	width: 27rem;
+}
+
+#topbar {
+	grid-area: topbar;
+	border: 1px solid green;
+	height: 3rem;
+}
+
+#bottombar {
+	grid-area: bottombar;
+	border: 1px solid blue;
+	height: 3rem;
+}
+
+#leftside {
+	grid-area: leftside;
+	border: 1px solid silver;
+	width: 3rem;
+}
+
+#rightside {
+	grid-area: rightside;
+	border: 1px solid yellow;
+	width: 3rem;
+}
