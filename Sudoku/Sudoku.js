@@ -27,11 +27,9 @@ const emptyBoard = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
 /******************************************************************************
- * boxCoords defaults to the 3x3x3 standard configuration of a 9x9 Sudoku grid.
- * setting this to a non-standard layout changes the borders to match the new
- * layout.
+ * stdGrid represents the 3x3x3 standard configuration of a 9x9 Sudoku grid.
  *****************************************************************************/
-let boxCoords = [
+const stdGrid = [
     [1, 1, 1, 2, 2, 2, 3, 3, 3],
     [1, 1, 1, 2, 2, 2, 3, 3, 3],
     [1, 1, 1, 2, 2, 2, 3, 3, 3],
@@ -41,7 +39,13 @@ let boxCoords = [
     [7, 7, 7, 8, 8, 8, 9, 9, 9],
     [7, 7, 7, 8, 8, 8, 9, 9, 9],
     [7, 7, 7, 8, 8, 8, 9, 9, 9]
-]
+];
+/******************************************************************************
+ * boxCoords defaults to the 3x3x3 standard configuration of a 9x9 Sudoku grid.
+ * setting this to a non-standard layout changes the borders to match the new
+ * layout.
+ *****************************************************************************/
+let boxCoords = [...stdGrid]; //stdGrid.map((x) => x);
 //#############################################################################
 //#endregion GLOBALS
 
@@ -159,6 +163,8 @@ function checkForCss() {
         .given input { color: black; }
         .box-right { border-right: 2px black solid; }
         .box-bottom { border-bottom: 2px black solid; }
+        .box-gray input { background-color: #d9d9d9; }
+        .box-silver input { background-color: #efefef; }
         .noBorder { border: none; border-collapse: collapse; }
         `;
         document.querySelector("head").appendChild(css);
@@ -173,6 +179,11 @@ function checkForCss() {
  * @param {any} d
  *****************************************************************************/
 let setOrDefault = (o, d) => (o == null || o == undefined) ? d : o;
+/******************************************************************************
+ * Helper method: isStdGrid
+ * Returns true if the boxCoords exactly matches the stdGrid.
+ *****************************************************************************/
+let isStdGrid = () => { return boxCoords.toString() === stdGrid.toString() };
 /******************************************************************************
  * Helper Method: getColumn
  * Gets the column index of a 9x9 board from the provided 0-80 cell index (i)
@@ -191,6 +202,9 @@ let getRow = (i) => parseInt(i / 9);
  * @param {any} i
  *****************************************************************************/
 function getBox(i) {
+    if (isStdGrid()) {
+        return (parseInt(getRow(i) / 3) * 3) + parseInt(getColumn(i) / 3);
+    }
     let col = parseInt(i % 9);
     let row = parseInt((i / 9) % 9);
     return boxCoords[row][col];
@@ -203,13 +217,15 @@ function getBox(i) {
  * @param {any} grid
  * @param {any} position
  *****************************************************************************/
-function getShape(grid, position) {
+function getShape(grid, boxId) {
     let iArray = [];
     for (let r = 0; r < 9; r++) {
         for (let c = 0; c < 9; c++) {
-            let val = grid[r][c];
-            if (position == boxCoords[r][c] && !iArray.includes(val) && val != 0) {
-                iArray.push(val);
+            if (boxId == boxCoords[r][c]) {
+                let val = parseInt(grid[r][c]);
+                if (val > 0 && !iArray.includes(val)) {
+                    iArray.push(val);
+                }
             }
         }
     }
@@ -239,7 +255,9 @@ function isComparable(expect, actual) {
  * @param {any} num
  *****************************************************************************/
 function noConflicts(grid, row, col, num) {
-    return isRowOk(grid, row, num) && isColOk(grid, col, num) && isBoxOk(grid, row, col, num);
+    return isRowOk(grid, row, num)
+        && isColOk(grid, col, num)
+        && isBoxOk(grid, row, col, num);
 }
 /******************************************************************************
  * Helper method: isRowOk
@@ -280,33 +298,25 @@ function isColOk(grid, col, num) {
  * @param {any} num
  *****************************************************************************/
 function isBoxOk(grid, row, col, num) {
+    if (isStdGrid()) {
+        //alert("Using Standard Grid");
+        row = parseInt(row / 3) * 3;
+        col = parseInt(col / 3) * 3;
 
-    // First, get the 1-9 idx from boxCourds of the corresponding row/col
-    let idx = parseInt(boxCoords[row][col]);
-    // Then, build an array from grid where the idx matches the positions in
-    // boxCoords.
-    let arr = [];
-    for (let r = 0; r < 9; r++) {
-        for (let c = 0; c < 9; c++) {
-            let val = grid[r][c];
-            if (val > 0 && parseInt(boxCoords[r][c]) === idx && !arr.includes(val)) {
-                arr.push(val);
+        for (var r = 0; r < 3; r++) {
+            for (var c = 0; c < 3; c++) {
+                if (grid[row + r][col + c] == num) {
+                    return false;
+                }
             }
         }
+        return true;
+    } else {
+        //alert("Using Irregular Grid");
+        let boxId = boxCoords[row][col];
+        let boxVals = getShape(grid, boxId);
+        return !boxVals.includes(num);
     }
-    // Finally, return true if number is NOT included in the resultant array
-    return !arr.includes(num);
-    //row = parseInt(row / 3) * 3;
-    //col = parseInt(col / 3) * 3;
-    //
-    //for (var r = 0; r < 3; r++) {
-    //    for (var c = 0; c < 3; c++) {
-    //        if (grid[row + r][col + c] == num) {
-    //            return false;
-    //        }
-    //    }
-    //}
-    //return true;
 }
 /******************************************************************************
  * Helper method: isSame
@@ -387,6 +397,9 @@ function printGrid(grid, gridId, replaceZero = "0") {
     rpt += "+-----------------------------------+\n";
     return rpt;
 }
+function canAddToArray(arr, val) {
+
+}
 //#############################################################################
 //#endregion HELPER METHODS
 
@@ -449,27 +462,23 @@ class Board {
         // An idx is a number corresponding to the cell from 0 - 80
         let idx = parseInt(index);
         let iArray = [];
-        for (var i = 0; i < 9; i++) {
-            let val = parseInt(this.board[getRow(idx)][i]);
+        for (var col = 0; col < 9; col++) {
+            let val = parseInt(this.board[getRow(idx)][col]);
             if (val > 0 && !iArray.includes(val)) {
                 iArray.push(val);
             }
         }
-        for (var i = 0; i < 9; i++) {
-            let val = parseInt(this.board[i][getColumn(idx)]);
+        for (var row = 0; row < 9; row++) {
+            let val = parseInt(this.board[row][getColumn(idx)]);
             if (val > 0 && !iArray.includes(val)) {
                 iArray.push(val);
             }
         }
-        for (var i = 0; i < 9; i++) {
-            for (var j = 0; j < 9; j++) {
-                let boxIdx = ((i * 9) + j);
-                if (getShape(this.board, boxIdx) === getShape(this.board, idx)) {
-                    let val = parseInt(this.board[i][j]);
-                    if (val > 0 && !iArray.includes(val)) {
-                        iArray.push(val);
-                    }
-                }
+        let shapeArray = getShape(this.board, idx);
+        for (let i = 0; i < shapeArray.length; i++) {
+            let val = parseInt(shapeArray[i]);
+            if (val > 0 && !iArray.includes(val)) {
+                iArray.push(val);
             }
         }
         return iArray.sort();
@@ -545,7 +554,7 @@ class Board {
                 if (this.fillBackTrace(board, row, col)) {
                     return true;
                 }
-                // mark cell as empty (with 0)    
+                // reset the cell as empty (0)    
                 board[row][col] = 0;
             }
         }
@@ -587,10 +596,13 @@ class Board {
                 break;
             }
         }
-        // Check all indeces against the visible existing values for each index
-        for (let i = 0; i < 81 && valid == true; i++) {
-            if (!isComparable(expected, this.getExisting(i))) {
-                valid = false;
+        if (valid) {
+            // Check all indeces against the visible existing values for each index
+            for (let i = 0; i < 81 && valid == true; i++) {
+                if (!isComparable(expected, this.getExisting(i))) {
+                    valid = false;
+                    break;
+                }
             }
         }
         return valid;
@@ -608,9 +620,26 @@ class Board {
     }
 
     // Print the board to the console log
+    report() {
+        let rpt = `Board: ${this.id}\n`;
+        rpt += "Cell Box Val Sees\n";
+        rpt += "==== === === =================\n";
+        for (let r = 0; r < 9; r++) {
+            for (let c = 0; c < 9; c++) {
+                let idx = ((r * 9) + c);
+                let boxId = boxCoords[r][c];
+                rpt += ` ${idx.pad(2)}   ${this.board[r][c]}   ${boxId}  ${this.getExisting(idx).toString()}\n`;
+            }
+        }
+        rpt += "==== === === =================\n";
+        return rpt;
+    }
+
+    // Print the board to the console log
     print() {
         let rpt = printGrid(this.board, this.id, "_");
         rpt += printGrid(boxCoords, "Box Coordinates");
+        rpt += this.report();
         console.log(rpt);
         //#region OLD WAY 
         /**********************************************
@@ -713,7 +742,7 @@ class Sudoku {
             msg = "Result does not match target. Puzzle does not contain a unique solution.";
         }
         console.log(msg);
-        alert(msg);
+        //alert(msg);
         this.load();
         return this.render();
     }
@@ -751,6 +780,7 @@ class Sudoku {
         let pattern = renderStyle === RenderStyle.TABLE
             ? `<table class="grid">${results}</table>`
             : `<div class="grid">${results}</div>`;
+        this.report();
         return pattern;
     }
 
@@ -830,9 +860,11 @@ class SudokuCell {
     //#region INSTANCE METHODS
     render() {
         let val = `<input id="cell${this.id}" type="text" value="${parseInt(this.value).hideZero()}"/>`;
+        let box = parseInt(getBox(this.id));
         let css = this.hasRightBorder ? " box-right" : "";
         css += this.hasBottomBorder ? " box-bottom" : "";
         css += this.isGiven ? " given" : "";
+        css += box % 3 == 1 ? "" : box % 3 == 2 ? " box-gray" : " box-silver";
         let pattern = this.grid.renderStyle == RenderStyle.TABLE
             ? `<td class="cell${css}">${val}</td>`
             : `<div class="cell${css}">${val}</div>`;

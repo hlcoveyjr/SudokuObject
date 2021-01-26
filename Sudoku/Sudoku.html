@@ -16,15 +16,15 @@
     <button id="btnEmpty"  onclick="fillPuzzle(grid.empty());"            >Empty</button>
     <script type="text/javascript">
         //let board = document.getElementById("board");
-        let myTarget = ["612345789", "347892156", "589176234", "134658927", "256719348", "798234561", "421983675", "873561492", "965427813"];
-        let myPuzzle = ["600000000", "000000100", "009000000", "000000020", "000001000", "000000001", "020000070", "000500000", "000070000"];
+        //let myTarget = ["612345789", "347892156", "589176234", "134658927", "256719348", "798234561", "421983675", "873561492", "965427813"];
+        let myTarget = ["612345789", "341289567", "526798134", "758431296", "893526471", "164972853", "439857612", "987164325", "275613948"];  
+        let myPuzzle = ["600000000", "000200000", "000008000", "000400000", "000000001", "000000050", "009000000", "000060000", "200000000"];
         let easyTarget = ["293458617", "148726359", "567139428", "325681974", "416973285", "879245136", "652814793", "734592861", "981367542"];
         let easyPuzzle = ["203008607", "140726009", "507139428", "025081904", "410903205", "079205036", "602010093", "700502001", "081367040"];
         let hardTarget = ["346917285", "952486371", "817352964", "581624739", "423795816", "679831542", "294173658", "765248193", "138569427"];
         let hardPuzzle = ["000007000", "002406300", "017000960", "580000030", "000090000", "070000042", "094000650", "005208100", "000500000"];
         let target = myTarget;
         let puzzle = myPuzzle;
-
         /**********************************************************************************
          * TODO:
          * --------------------------------------------------------------------------------
@@ -39,44 +39,45 @@
          * *******************************************************************************/
 
         //verboseLogs = true;
-        //boxCoords = [
-        //    [1, 1, 1, 2, 2, 2, 2, 3, 3],
-        //    [1, 1, 4, 2, 4, 2, 3, 3, 3],
-        //    [1, 5, 4, 4, 4, 2, 3, 3, 3],
-        //    [1, 5, 5, 4, 4, 2, 3, 6, 6],
-        //    [1, 1, 5, 4, 4, 2, 6, 6, 6],
-        //    [5, 5, 5, 7, 7, 7, 6, 6, 6],
-        //    [8, 8, 5, 7, 7, 9, 9, 9, 6],
-        //    [8, 8, 5, 7, 7, 7, 7, 9, 9],
-        //    [8, 8, 8, 8, 8, 9, 9, 9, 9]
-        //];
+        boxCoords = [
+            [1, 1, 1, 2, 2, 2, 2, 4, 4],
+            [1, 1, 6, 2, 6, 2, 4, 4, 4],
+            [1, 5, 6, 6, 6, 2, 4, 4, 4],
+            [1, 5, 5, 6, 6, 2, 4, 3, 3],
+            [1, 1, 5, 6, 6, 2, 3, 3, 3],
+            [5, 5, 5, 7, 7, 7, 3, 3, 3],
+            [9, 9, 5, 7, 7, 8, 8, 8, 3],
+            [9, 9, 5, 7, 7, 7, 7, 8, 8],
+            [9, 9, 9, 9, 9, 8, 8, 8, 8]
+        ];
 
-        //let grid2 = Board.parseArrayToBoard(myTarget);
-        //printGrid(grid2, "MyGrid", true);
+        /********************
+         * SOLVE SUDOKU-ONLY
+         *******************/
         let grid = new Sudoku("grid", puzzle, target);
         //var clone = grid.clone();
         //clone.report();
         //grid.renderStyle = RenderStyle.TABLE;
         //console.log(printGrid(emptyBoard, "Empty Board"));
         board.innerHTML = grid.render();
-        
-        function fillPuzzle(render) {
 
+        function fillPuzzle(render) {
             grid.report();
             board.innerHTML = render;
         }
-        
-        /*
-        */
 
         /********************
          * SOLVE BOARD-ONLY
-         *******************/
+         ******************
+        verboseLogs = true;
+        let board = new Board("MySudoku", myPuzzle);
+        board.fillObvious();
+        board.print();
+*/
+        //let grid2 = Board.parseArrayToBoard(myTarget);
+        //printGrid(grid2, "MyGrid", true);
         //let cell = 28;
         //console.log(getRow(cell), getColumn(cell), getBox(cell));
-        //let board = new Board("MySudoku", hardPuzzle);
-        //board.print();
-        //board.fillObvious();
         //board = Board.solve(board);
         //board.print();
         //console.log(board.getExisting(cell));
@@ -87,6 +88,13 @@
         //board.clear();
         //board.print();
         //newBoard.print();
+
+        /*******************
+         * TEST ZONE
+         ******************/
+        console.log(boxCoords.toString());
+        console.log(stdGrid.toString());
+        console.log(isStdGrid());
     </script>
 </body>
 </html>
