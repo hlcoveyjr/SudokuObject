@@ -1,19 +1,67 @@
-﻿<!DOCTYPE html5>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <title>Sudoku Generator</title>
+    <link href="Sudoku.css" rel="stylesheet" />
     <script src="Sudoku.js" type="text/javascript"></script>
     <script type="text/javascript">
-        useMyOwnCss = false;
+    function pressControl(btn) {
+        let ctrlButtons = document.querySelectorAll("[data-button='ctrl']");
+        ctrlButtons.forEach(b => b.classList.remove("pressed"));
+        btn.classList.add("pressed");
+    }
+    function changeToColors() {
+        let numButtons = document.querySelectorAll("[data-button='num']");
+        for (let btn of numButtons) {
+            btn.classList.add(`color${btn.dataset.value}`);
+        }
+    }
+    function changeToNumbers(btn) {
+        let numButtons = document.querySelectorAll("[data-button='num']");
+        for (let btn of numButtons) {
+            btn.classList.remove(`color${btn.dataset.value}`);
+        }
+    }
     </script>
 </head>
 <body>
-    <div id="board"></div><br />
-    <button id="btnPuzzle" onclick="fillPuzzle(grid.reset(puzzle));"      >Puzzle</button>
-    <button id="btnTarget" onclick="fillPuzzle(grid.reset(target));"      >Target</button>
-    <button id="btnsolve"  onclick="fillPuzzle(grid.solve());"            >Solve</button>
-    <button id="btnEmpty"  onclick="fillPuzzle(grid.empty());"            >Empty</button>
+    <div class="container">
+        <div id="board"></div>
+        <div id="keypad">
+            <div class="button-row">
+                <button id="btn7"       onclick="" class="button" data-button="num" data-value="7"> 7 </button>
+                <button id="btn8"       onclick="" class="button" data-button="num" data-value="8"> 8 </button>
+                <button id="btn9"       onclick="" class="button" data-button="num" data-value="9"> 9 </button>
+                <button id="btnLarge"   onclick="pressControl(this);changeToNumbers(this);" class="button pressed" data-button="ctrl">(9)</button>
+            </div>                              
+            <div class="button-row">            
+                <button id="btn4"       onclick="" class="button" data-button="num" data-value="4"> 4 </button>
+                <button id="btn5"       onclick="" class="button" data-button="num" data-value="5"> 5 </button>
+                <button id="btn6"       onclick="" class="button" data-button="num" data-value="6"> 6 </button>
+                <button id="btnSnyder"  onclick="pressControl(this);changeToNumbers(this);" class="button" data-button="ctrl">SN</button>
+            </div>                              
+            <div class="button-row">            
+                <button id="btn1"       onclick="" class="button" data-button="num" data-value="1"> 1 </button>
+                <button id="btn2"       onclick="" class="button" data-button="num" data-value="2"> 2 </button>
+                <button id="btn3"       onclick="" class="button" data-button="num" data-value="3"> 3 </button>
+                <button id="btnCenter"  onclick="pressControl(this);changeToNumbers(this);" class="button" data-button="ctrl"> - </button>
+            </div>                              
+            <div class="button-row">            
+                <button id="btn0"       onclick="" class="button" data-button="num" data-value="0"> 0 </button>
+                <button id="btnDelete"  onclick="" class="button span-2"> X </button>
+                <button id="btnColor"   onclick="pressControl(this);changeToColors();" class="button" data-button="ctrl"> C </button>
+            </div>
+            <div class="button-row">
+                <button id="btnPuzzle"  onclick="fillPuzzle(grid.reset(puzzle));"  class="button text span-2" >Puzzle</button>
+                <button id="btnTarget"  onclick="fillPuzzle(grid.reset(target));"  class="button text span-2" >Target</button>
+            </div>
+            <div class="button-row">
+                <button id="btnsolve"   onclick="fillPuzzle(grid.solve());"        class="button text span-2" >Solve</button>
+                <button id="btnEmpty"   onclick="fillPuzzle(grid.empty());"        class="button text span-2" >Empty</button>
+            </div>
+        </div>
+   </div>
     <script type="text/javascript">
         //let board = document.getElementById("board");
         //let myTarget = ["612345789", "347892156", "589176234", "134658927", "256719348", "798234561", "421983675", "873561492", "965427813"];

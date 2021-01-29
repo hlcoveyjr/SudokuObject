@@ -6,7 +6,7 @@
 //#############################################################################
 /* useMyOwnCss permits the ability to override built-in css
  *****************************************************************************/
-let useMyOwnCss = false;
+let useMyOwnCss = true;
 let verboseLogs = false;
 /******************************************************************************
  * expected is an array representing the default 1-9 values for standard Sudoku

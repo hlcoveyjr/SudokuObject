@@ -1,13 +1,31 @@
-﻿body {
-	font-family: Tahoma, Arial, Helvetica, sans-serif
+:root {
+	--main-radius: 3px;
+	--main-padding: 5px;
 }
 
-.grid {
+body {
+	font-family: Tahoma, Arial, Helvetica, sans-serif
+}
+a {
+	text-align: center;
+	display: block;
+	font-family: inherit;
+	text-decoration: none;
+	font-weight: bold;
+	margin: 1rem;
+}
+
+.container {
 	display: grid;
-	/*height: 100vh;*/
-	grid-template-columns: 1fr 9fr 1fr 9fr;
-	grid-template-rows: 1fr 9fr 1fr;
-	grid-template-areas: "corner1 topbar corner2 control" "leftside board rightside control" "corner3 bottombar corner4 control";
+	margin: auto;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	max-width: 1024px;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr;
+	grid-template-areas: "grid keypad";
 	grid-gap: 0.01rem;
 	font-weight: 800;
 	text-transform: uppercase;
@@ -16,64 +34,128 @@
 	text-align: center;
 }
 
-#control {
-	grid-area: control;
-	border: 1px solid red;
-	width: 20rem;
-}
-
-#corner1 {
-	grid-area: corner1;
-	border: none;
-	width: 3rem;
-	height: 3rem;
-}
-#corner2 {
-	grid-area: corner2;
-	border: none;
-	width: 3rem;
-	height: 3rem;
-}
-#corner3 {
-	grid-area: corner3;
-	border: none;
-	width: 3rem;
-	height: 3rem;
-}
-#corner4 {
-	grid-area: corner4;
-	border: none;
-	width: 3rem;
-	height: 3rem;
-}
-
 #board {
 	grid-area: grid;
+	/*border: 1px solid red;*/
+}
+
+#keypad {
+	grid-area: keypad;
+	display: table;
+	margin: auto;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
 	border: 1px solid black;
-	height: 27rem;
-	width: 27rem;
 }
 
-#topbar {
-	grid-area: topbar;
-	border: 1px solid green;
+.button-row {
+	display: table-row;
 	height: 3rem;
+	max-height: 3rem;
+	padding: .25rem;
+	margin:.5rem;
 }
-
-#bottombar {
-	grid-area: bottombar;
-	border: 1px solid blue;
+.button {
+	display:table-cell;
+	font-size: 24px;
+	margin: .25rem;
+	padding: .25rem;
 	height: 3rem;
+	width: 3rem;
+	max-height: 3rem;
+	max-width: 3rem;
+	border-radius: var(--main-radius);
+	text-align: center;
+}
+.span-2 {
+	width: 6.5rem;
+	max-width: 6.5rem;
+}
+.text {
+	font-size:initial;
 }
 
-#leftside {
-	grid-area: leftside;
-	border: 1px solid silver;
-	width: 3rem;
+.pressed {
+	background-color: #d9d9d9;
+	border-style: inset;
 }
 
-#rightside {
-	grid-area: rightside;
-	border: 1px solid yellow;
+.color0 { background-color: #ffffff; color: #ffffff; }
+.color1 { background-color: #ff0000; color: #ff0000; }
+.color2 { background-color: #ffd800; color: #ffd800; }
+.color3 { background-color: #0094ff; color: #0094ff; }
+.color4 { background-color: #00ff21; color: #00ff21; }
+.color5 { background-color: #ff00dc; color: #ff00dc; }
+.color6 { background-color: #ff6a00; color: #ff6a00; }
+.color7 { background-color: #efefef; color: #efefef; }
+.color8 { background-color: #808080; color: #808080; }
+.color9 { background-color: #000000; color: #000000; }
+
+/***************************
+	Sudoku Panel
+***************************/
+.grid {
+	display: table;
+	border: 2px black solid;
+}
+
+.row {
+	display: table-row;
+	border: none;
+}
+
+.cell {
+	display: table-cell;
+	border: 1px gray solid;
 	width: 3rem;
+	height: 3rem;
+	max-width: 3rem;
+	max-height: 3rem;
+}
+
+	.cell input {
+		width: 3rem;
+		height: 3rem;
+		padding: 0;
+		margin: 0;
+		border: none;
+		text-align: center;
+		vertical-align: middle;
+		font-size: 2rem;
+		color: blue;
+	}
+
+.given input {
+	color: black;
+}
+
+.box-right {
+	border-right: 2px black solid;
+}
+
+.box-bottom {
+	border-bottom: 2px black solid;
+}
+
+.box-gray input {
+	background-color: #d9d9d9;
+}
+
+.box-silver input {
+	background-color: #efefef;
+}
+
+.noBorder {
+	border: none;
+	border-collapse: collapse;
+}
+
+@media only screen and (max-width: 550px) {
+	.container {
+		grid-template-columns: 1fr;
+		grid-template-rows: .5fr .5fr;
+		grid-template-areas: "grid" "keypad";
+	}
 }
